@@ -8,7 +8,7 @@ from rest_framework import status
 
 class LiveEventView(generics.CreateAPIView):
     """
-    A viewset for viewing and editing user instances.
+    endpoint to create events to run immediately
     """
     serializer_class = LiveAudioSerializers
     @extend_schema(
@@ -40,3 +40,5 @@ class LiveEventView(generics.CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
