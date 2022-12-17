@@ -1,0 +1,16 @@
+asgiref==3.5.2
+attrs==22.1.0
+autopep8==2.0.0
+Django==4.1.4
+djangorestframework==3.14.0
+drf-spectacular==0.25.0
+inflection==0.5.1
+jsonschema==4.17.3
+pycodestyle==2.10.0
+pygame==2.1.2
+pyrsistent==0.19.2
+pytz==2022.6
+PyYAML==6.0
+sqlparse==0.4.3
+tomli==2.0.1
+uritemplate==4.1.1

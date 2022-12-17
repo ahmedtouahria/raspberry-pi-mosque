@@ -2,13 +2,12 @@
 *.log
 *.pot
 *.pyc
-__pycache__/*
+__pycache__
 db.sqlite3
 media
-adan/__pycache__/*
 # Backup files # 
 *.bak 
-
+migrations
 # If you are using PyCharm # 
 # User-specific stuff
 .idea/**/workspace.xml
@@ -135,3 +134,4 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+adan/__pycache__/*

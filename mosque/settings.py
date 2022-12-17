@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     #third party apps
     'rest_framework',
     'drf_spectacular',
+    'constance',
+    'constance.backends.database',
+    'knox',
     #my apps
     "adan"
 
@@ -47,7 +50,33 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     # YOUR SETTINGS
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
+    ]
 }
+from datetime import timedelta
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
+REST_KNOX = {
+    'TOKEN_TTL': timedelta(days=1),
+}
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'json_field': ['django.forms.JSONField', {}]
+}
+
+CONSTANCE_CONFIG = {
+    'PRAYER_SOURCE': ("{}", 'json_field'),
+}
+
+
+
+
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Raspberry-pi adhan api ',
     'DESCRIPTION': 'An application that allows the user to control the mosques speakers remotely through the phone application',
@@ -136,4 +165,13 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # 'data' is my media folder
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Media
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+MEDIA_URL = '/media/'
