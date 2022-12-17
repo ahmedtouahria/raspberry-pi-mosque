@@ -55,6 +55,43 @@ class LiveEventView(generics.CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+class CreateAfterBeforePrayer(generics.CreateAPIView):
+    """
+    endpoint to create after before prayer hooks 
+    """
+    authentication_classes=(TokenAuthentication,)
+    permission_classes=(permissions.IsAuthenticated,)
+    serializer_class = AfterBeforePrayerSerializer
+    @extend_schema(
+        # extra parameters added to the schema
+        parameters=[
+            AfterBeforePrayerSerializer,
+        ],
+        # override default docstring extraction
+        description='More descriptive text',
+        # provide Authentication class that deviates from the views default
+        auth=TokenAuthentication,
+        # change the auto-generated operation name
+        operation_id=None,
+        # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
+        operation=None,
+        # attach request/response examples to the operation.
+        examples=[
+            OpenApiExample(
+                'Example 1',
+                description='longer description',
+                value=...
+            ),
+            ...
+        ],
+    )
+    def create(self, request, *args, **kwargs):
+        data=request.data
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        PrayerEvent.objects.create(user=request.user,type=data.get("type"),prayer=data.get("prayer"),repeated=data.get("repeated"),audio=data.get("audio"),)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 class CurrentPrayerTime(APIView):
     """
     View to get current prayer time 

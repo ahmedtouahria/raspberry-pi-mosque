@@ -17,12 +17,7 @@ class State(models.Model):
     offset_time = models.IntegerField()
     def __str__(self):
         return self.name
-class ComplexEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, complex):
-            return [obj.real, obj.imag]
-        # Let the base class default method raise the TypeError
-        return json.JSONEncoder.default(self, obj)
+
 class Prayer(models.Model):
     """ Prayer (salat) ``model`` """
     state = models.ForeignKey("adan.state", on_delete=models.CASCADE)
@@ -47,16 +42,24 @@ class Prayer(models.Model):
        super(Prayer, self).save(*args, **kwargs) # Call the real save() method
 class PrayerEvent(models.Model):
     TYPE = (('after','after'),('before','before'))
+    PRAYER= (('elfajer','elfajer'),('duhr','duhr'),('alasr','alasr'),('almaghreb','almaghreb'),('alaicha','alaicha'))
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=50,choices=TYPE)
     repeated = models.BooleanField(default=True)
-    prayer = models.CharField(max_length=50)
+    prayer = models.CharField(max_length=50,choices=PRAYER)
+    audio = models.FileField(upload_to="prayer_event", max_length=250,null=True,blank=True)
     def __str__(self):
-        return 
+        return f"{self.type}-{self.prayer}"
 
 class Mosque(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     name = models.CharField("name of mosque", max_length=150)
     status = models.BooleanField(default=False)
+    state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
+    prayer = models.JSONField(null=True,blank=True)
+    def save(self, *args, **kwargs):
+        if self.prayer is None or self.prayer=="":
+            self.prayer=Prayer.objects.filter(state=self.state).first()
+        super(Mosque, self).save(*args, **kwargs) # Call the real save() method
     def __str__(self):
         return f"{self.name} is {self.status} now"

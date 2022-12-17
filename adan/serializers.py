@@ -7,7 +7,12 @@ class LiveAudioSerializers(serializers.ModelSerializer):
     class Meta:
         model=LiveEvent
         fields="__all__"
-
+class AfterBeforePrayerSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+    class Meta:
+        model=PrayerEvent
+        fields="__all__"
+        read_only_fields = ['user']
 class AuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(
         label=_("username"),
