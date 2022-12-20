@@ -99,8 +99,8 @@ class CurrentPrayerTime(APIView):
     * Requires token authentication.
     * Only auth users are able to access this view.
     """
-    #authentication_classes = [TokenAuthentication]
-    #permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
         """
