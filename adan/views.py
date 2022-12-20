@@ -107,10 +107,17 @@ class CurrentPrayerTime(APIView):
         """
         current_date_mounth = datetime.today().month
         current_date_day = datetime.today().day
-        id_day = (current_date_mounth-1)*30+current_date_day
+        id_day = (current_date_mounth-1)*30+current_date_day # get current day id 
         prayer_json =json.loads(config.PRAYER_SOURCE)["data"][id_day]
-        print(id_day)
-        return Response(prayer_json)
+        adan_json={
+        "adan_elfajer" : PrayerAudio.objects.filter(prayer="elfajer").last().audio.url,
+        "adan_duhr" : PrayerAudio.objects.filter(prayer="duhr").last().audio.url,
+        "adan_alasr" : PrayerAudio.objects.filter(prayer="alasr").last().audio.url,
+        "adan_almaghreb" : PrayerAudio.objects.filter(prayer="almaghreb").last().audio.url,
+        "adan_alaicha" : PrayerAudio.objects.filter(prayer="alaicha").last().audio.url
+        }
+        print(adan_json["adan_elfajer"].duration)
+        return Response({"time":prayer_json,"adan":adan_json})
 
 class CurrentMosqueState(APIView):
     """
@@ -133,3 +140,40 @@ class CurrentMosqueState(APIView):
             self_mosque=None
             return Response({"error":"Unauthorized"},status=status.HTTP_401_UNAUTHORIZED)
 
+class CreatePrayerAdan(generics.CreateAPIView):
+    """
+    endpoint to create prayer adan 
+    """
+    authentication_classes=(TokenAuthentication,)
+    permission_classes=(permissions.IsAuthenticated,)
+    serializer_class = PrayerAdanSerializer
+    @extend_schema(
+        # extra parameters added to the schema
+        parameters=[
+            PrayerAdanSerializer,
+        ],
+        # override default docstring extraction
+        description='More descriptive text',
+        # provide Authentication class that deviates from the views default
+        auth=TokenAuthentication,
+        # change the auto-generated operation name
+        operation_id=None,
+        # or even completely override what AutoSchema would generate. Provide raw Open API spec as Dict.
+        operation=None,
+        # attach request/response examples to the operation.
+        examples=[
+            OpenApiExample(
+                'Example 1',
+                description='longer description',
+                value=...
+            ),
+            ...
+        ],
+    )
+    def create(self, request, *args, **kwargs):
+        data=request.data
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        PrayerEvent.objects.create(user=request.user,type=data.get("type"),prayer=data.get("prayer"),repeated=data.get("repeated"),audio=data.get("audio"),)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

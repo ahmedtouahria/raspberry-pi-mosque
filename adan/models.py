@@ -5,6 +5,15 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from constance import config
 from datetime import datetime, timedelta
+PRAYER= (('elfajer','elfajer'),('duhr','duhr'),('alasr','alasr'),('almaghreb','almaghreb'),('alaicha','alaicha'))
+
+class PrayerAudio(models.Model):
+    audio = models.FileField("audio file")
+    prayer = models.CharField(max_length=50,choices=PRAYER)
+    audio_duration = models.PositiveIntegerField(null=True,blank=True)
+    def __str__(self):
+        return self.prayer
+
 class LiveEvent(models.Model):
     """This event is triggered immediately"""
     audio = models.FileField("audio file")
@@ -42,7 +51,6 @@ class Prayer(models.Model):
        super(Prayer, self).save(*args, **kwargs) # Call the real save() method
 class PrayerEvent(models.Model):
     TYPE = (('after','after'),('before','before'))
-    PRAYER= (('elfajer','elfajer'),('duhr','duhr'),('alasr','alasr'),('almaghreb','almaghreb'),('alaicha','alaicha'))
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=50,choices=TYPE)
     repeated = models.BooleanField(default=True)
@@ -52,14 +60,22 @@ class PrayerEvent(models.Model):
         return f"{self.type}-{self.prayer}"
 
 class Mosque(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
+    topic = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     name = models.CharField("name of mosque", max_length=150)
     status = models.BooleanField(default=False)
     state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
-    prayer = models.JSONField(null=True,blank=True)
+    prayer = models.JSONField(null=True,blank=True)# all prayers time (365 days) in this mosque
     def save(self, *args, **kwargs):
         if self.prayer is None or self.prayer=="":
             self.prayer=Prayer.objects.filter(state=self.state).first()
         super(Mosque, self).save(*args, **kwargs) # Call the real save() method
     def __str__(self):
         return f"{self.name} is {self.status} now"
+
+class Topic(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
+    serial_number = models.CharField(max_length=300,unique=True)
+    def __str__(self):
+        return  self.serial_number
+
+

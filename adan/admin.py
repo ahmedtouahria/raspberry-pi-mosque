@@ -7,4 +7,6 @@ admin.site.register(LiveEvent)
 admin.site.register(State)
 admin.site.register(PrayerEvent)
 admin.site.register(Mosque)
+admin.site.register(PrayerAudio)
+
 

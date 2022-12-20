@@ -7,9 +7,11 @@ routers = DefaultRouter()
 
 urlpatterns = [
     path('',include(routers.urls)),
-    path('login/', LoginView.as_view(), name='knox_logout'),# login user
+    path('login/', LoginView.as_view(), name='knox_login'),# login user
     path("current_today_prayer_time/", CurrentPrayerTime.as_view()),
     path("current_mosque_status/", CurrentMosqueState.as_view()),
     path("add_prayer_event/", CreateAfterBeforePrayer.as_view()),
-    path('create_live_event',LiveEventView.as_view())
+    path('create_live_event/',LiveEventView.as_view()),
+    path('create_prayer_adan/',CreatePrayerAdan.as_view())
+
 ]
