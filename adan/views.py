@@ -12,12 +12,13 @@ import json
 # Create your views here.
 class LoginView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
+    @extend_schema(description='adan Login api ', methods=["post"],parameters=[AuthTokenSerializer],responses={"token":str,"expiry":str}   
+    ,examples=[OpenApiExample(name="token",value="G8FJKJZKKJ8585PJFJZ5Z5F7ZE")])
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        print(request.user)
         return super(LoginView, self).post(request, format=None)
 class LiveEventView(generics.CreateAPIView):
     """
@@ -116,7 +117,6 @@ class CurrentPrayerTime(APIView):
         "adan_almaghreb" : PrayerAudio.objects.filter(prayer="almaghreb").last().audio.url,
         "adan_alaicha" : PrayerAudio.objects.filter(prayer="alaicha").last().audio.url
         }
-        print(adan_json["adan_elfajer"].duration)
         return Response({"time":prayer_json,"adan":adan_json})
 
 class CurrentMosqueState(APIView):
