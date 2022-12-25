@@ -142,7 +142,7 @@ class CurrentMosqueState(APIView):
 
 class CreatePrayerAdan(generics.CreateAPIView):
     """
-    endpoint to create prayer adan 
+    endpoint to create prayer adan ['elfajer','duhr','alasr','almaghreb','alaicha']
     """
     authentication_classes=(TokenAuthentication,)
     permission_classes=(permissions.IsAuthenticated,)
