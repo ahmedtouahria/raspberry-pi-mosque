@@ -34,7 +34,7 @@ class AuthTokenSerializer(serializers.Serializer):
     )
     token = serializers.CharField(
         label=_("Token"),
-        read_only=True
+        read_only=True,
     )
 
     def validate(self, attrs):
@@ -79,5 +79,29 @@ class PrayerSerializer(serializers.Serializer):
 class TokenSerializer(serializers.Serializer):
     authorization = serializers.CharField(
         label=_("Authorization"),
+    )
+
+class StatusSerializer(serializers.Serializer):
+    status = serializers.BooleanField(
+        label=_("status"),
+    )
+
+class LoginResponseSerializer(serializers.Serializer):
+    token = serializers.CharField(
+        label=_("status"),
+    )
+    expiry = serializers.DateTimeField(
+        label=_("expiry"),
+    )
+
+class LoginRequestBodySerializer(serializers.Serializer):
+    username = serializers.CharField(
+        label=_("username"),
+        write_only=True
+    )
+    password = serializers.CharField(
+        label=_("Password"),
+        style={'input_type': 'password'},
+        trim_whitespace=False,
         write_only=True
     )

@@ -8,6 +8,7 @@ PRAYER= (('elfajer','elfajer'),('duhr','duhr'),('alasr','alasr'),('almaghreb','a
 
 class PrayerAudio(models.Model):
     audio = models.FileField("audio file")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     prayer = models.CharField(max_length=50,choices=PRAYER)
     audio_duration = models.PositiveIntegerField(null=True,blank=True)
     def save(self, *args, **kwargs):
@@ -29,9 +30,9 @@ class LiveEvent(models.Model):
        if self.audio_duration is None or self.audio_duration == "":
         audio_info = mutagen.File(self.audio).info
         self.audio_duration=int(audio_info.length)
-       super(LiveEvent(), self).save(*args, **kwargs) # Call the real save() method
+       super(LiveEvent, self).save(*args, **kwargs) # Call the real save() method
     def __str__(self):
-        return self.id
+        return self.name
 
 class State(models.Model):
     name = models.CharField("state name", max_length=120)

@@ -12,6 +12,7 @@ drf-spectacular==0.25.0
 inflection==0.5.1
 jsonschema==4.17.3
 mutagen==1.46.0
+paho-mqtt==1.6.1
 pycodestyle==2.10.0
 pycparser==2.21
 pygame==2.1.2

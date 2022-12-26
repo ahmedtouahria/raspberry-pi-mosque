@@ -12,8 +12,8 @@ import json
 # Create your views here.
 class LoginView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
-    @extend_schema(description='adan Login api ', methods=["post"],parameters=[AuthTokenSerializer],responses={"token":str,"expiry":str}   
-    ,examples=[OpenApiExample(name="token",value="G8FJKJZKKJ8585PJFJZ5Z5F7ZE")])
+    @extend_schema(description='adan Login api ', methods=["post"],parameters=[LoginRequestBodySerializer],responses=LoginResponseSerializer  
+    ,)
     def post(self, request, format=None):
         serializer = AuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -129,6 +129,7 @@ class CurrentMosqueState(APIView):
     """
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
+    @extend_schema(description='mosque status', methods=["get"],parameters=[TokenSerializer],responses=(StatusSerializer),)
 
     def get(self, request, format=None):
         """
@@ -136,8 +137,8 @@ class CurrentMosqueState(APIView):
         """
         current_user = request.user
         try:
-            self_mosque = Mosque.objects.get(user=current_user)
-            return Response({"mosque":self_mosque.status})
+            self_mosque = Mosque.objects.get(topic=current_user)
+            return Response({"status":self_mosque.status})
         except:
             self_mosque=None
             return Response({"error":"Unauthorized"},status=status.HTTP_401_UNAUTHORIZED)
