@@ -1,0 +1,44 @@
+{
+	"operation": "transfer",
+	"sender": 0,
+	"data": {
+		"model": "PrayerEvent",
+		"type": "after",
+		"repeated": true,
+		"prayer": "elfajer",
+		"audio": "test.test/test/test",
+		"audio_duration": 1
+	}
+}
+
+{
+   "operation":"transfer",
+   "sender":0,
+   "data":{
+      "model":"LiveEvent",
+      "audio":"test.test/test/test",
+      "audio_duration":1
+   }
+}
+
+{
+   "operation":"transfer",
+   "sender":0,
+   "data":{
+      "model":"PrayerAudio",
+      "audio":"test.test/test/test",
+      "prayer":"duhr",
+      "audio_duration":2
+   }
+}
+
+
+{
+   "operation":"transfer",
+   "sender":0,
+   "data":{
+      "model":"LiveEvent",
+      "audio":"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+      "audio_duration":1
+   }
+}
