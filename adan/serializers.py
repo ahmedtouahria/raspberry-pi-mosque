@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import authenticate
 
 class LiveAudioSerializers(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     class Meta:
         model=LiveEvent
         fields="__all__"
@@ -42,10 +43,6 @@ class AuthTokenSerializer(serializers.Serializer):
         if username and password:
             user = authenticate(request=self.context.get('request'),
                                 username=username, password=password)
-
-            # The authenticate call simply returns None for is_active=False
-            # users. (Assuming the default ModelBackend authentication
-            # backend.)
             if not user:
                 msg = _('Incorrect username or password')
                 raise serializers.ValidationError(msg, code='authorization')
@@ -55,3 +52,32 @@ class AuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
+class PrayerSerializer(serializers.Serializer):
+    elfajer = serializers.TimeField(
+        label=_("elfajer"),
+        read_only=True
+
+    )
+    duhr = serializers.TimeField(
+        label=_("duhr"),
+        read_only=True
+
+    )
+    alasr = serializers.TimeField(
+        label=_("alasr"),
+        read_only=True
+    )
+    almaghreb = serializers.TimeField(
+        label=_("almaghreb"),
+        read_only=True
+    )
+    alaicha = serializers.TimeField(
+        label=_("alaicha"),
+        read_only=True
+    )
+
+class TokenSerializer(serializers.Serializer):
+    authorization = serializers.CharField(
+        label=_("Authorization"),
+        write_only=True
+    )

@@ -101,15 +101,18 @@ class CurrentPrayerTime(APIView):
     """
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-
+    @extend_schema(description='adan Login api ', methods=["get"],parameters=[TokenSerializer],responses=(PrayerSerializer),)
     def get(self, request, format=None):
         """
         Return a current day prayer time 
         """
+        self_user = request.user
+        self_mosque = Mosque.objects.filter(topic=self_user).first()
+        print(self_mosque)
         current_date_mounth = datetime.today().month
         current_date_day = datetime.today().day
         id_day = (current_date_mounth-1)*30+current_date_day # get current day id 
-        prayer_json =json.loads(config.PRAYER_SOURCE)["data"][id_day]
+        prayer_json =self_mosque.state.prayer_time["data"][id_day]
         adan_json={
         "adan_elfajer" : PrayerAudio.objects.filter(prayer="elfajer").last().audio.url,
         "adan_duhr" : PrayerAudio.objects.filter(prayer="duhr").last().audio.url,
@@ -117,8 +120,7 @@ class CurrentPrayerTime(APIView):
         "adan_almaghreb" : PrayerAudio.objects.filter(prayer="almaghreb").last().audio.url,
         "adan_alaicha" : PrayerAudio.objects.filter(prayer="alaicha").last().audio.url
         }
-        return Response({"time":prayer_json,"adan":adan_json})
-
+        return Response({"mosque_name":self_mosque.name,"time":prayer_json,"adan":adan_json})
 class CurrentMosqueState(APIView):
     """
     View to get current mosque connection state  
