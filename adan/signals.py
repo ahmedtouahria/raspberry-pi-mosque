@@ -17,7 +17,6 @@ def create_live_event(sender, instance, **kwargs):
 		"audio_duration": instance.audio_duration
 	}}   
     print(instance.user.topic)
-
     json_msg_publisher=json.dumps(json_msg,ensure_ascii=False)  #ensure_ascii for decode arabic characters
     mqtt_publisher.main(topic=str(instance.user.topic), message=json_msg_publisher)
 
