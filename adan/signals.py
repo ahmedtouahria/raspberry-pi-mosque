@@ -28,6 +28,7 @@ def create_after_before_event(sender, instance, **kwargs):
 	"data": {
 		"model": "PrayerEvent",
 		"type": instance.type,
+		"name": instance.name,
 		"user": instance.user.id,
 		"repeated": instance.repeated,
 		"prayer": instance.prayer,

@@ -21,6 +21,7 @@ class AfterBeforePrayerSerializer(serializers.ModelSerializer):
         model=PrayerEvent
         fields="__all__"
         read_only_fields = ['user','audio_duration']
+
 class AuthTokenSerializer(serializers.Serializer):
     username = serializers.CharField(
         label=_("username"),

@@ -11,6 +11,7 @@ class PrayerAudio(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     prayer = models.CharField(max_length=50,choices=PRAYER)
     audio_duration = models.PositiveIntegerField(null=True,blank=True)
+    created_at = models.DateTimeField(auto_now=True)
     def save(self, *args, **kwargs):
        if self.audio_duration is None or self.audio_duration == "":
         audio_info = mutagen.File(self.audio).info
@@ -80,6 +81,7 @@ class Mosque(models.Model):
     state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
     def __str__(self):
         return f"{self.name} is {self.status} now"
+
 class Topic(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     serial_number = models.CharField(max_length=300,unique=True)
