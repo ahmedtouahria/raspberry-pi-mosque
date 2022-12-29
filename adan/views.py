@@ -130,18 +130,31 @@ class CurrentMosqueState(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     @extend_schema(description='mosque status', methods=["get"],parameters=[TokenSerializer],responses=(StatusSerializer),)
-
     def get(self, request, format=None):
         """
         Return a current mosque connection state
         """
+        import requests
+        BASE_URL=config.BASE_MQTT_API_URL
+        username=config.MQTT_USERNAME
+        password=config.MQTT_PASSWORD
         current_user = request.user
         try:
-            self_mosque = Mosque.objects.get(topic=current_user)
-            return Response({"status":self_mosque.status})
-        except:
-            self_mosque=None
-            return Response({"error":"Unauthorized"},status=status.HTTP_401_UNAUTHORIZED)
+            topic = Topic.objects.get(user=current_user)
+        except Topic.DoesNotExist:
+            topic=None
+        if topic:
+                response = requests.get(f'{BASE_URL}/clients/{topic.serial_number}', auth=(username, password))
+                print(json.loads(response.text))
+                response_dict = json.loads(response.text)
+                try:
+                    if response_dict['connected']:
+                        return Response({"status":True})
+                    else:
+                        return Response({"status":False})
+                except:
+                    return Response(response_dict)
+        else: return Response({"success":False,"message":'Topic id does not exist'})
 
 class CreatePrayerAdan(generics.CreateAPIView):
     """
