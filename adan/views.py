@@ -113,14 +113,7 @@ class CurrentPrayerTime(APIView):
         current_date_day = datetime.today().day
         id_day = (current_date_mounth-1)*30+current_date_day # get current day id 
         prayer_json =self_mosque.state.prayer_time["data"][id_day]
-        adan_json={
-        "adan_elfajer" : PrayerAudio.objects.filter(prayer="elfajer").last().audio.url,
-        "adan_duhr" : PrayerAudio.objects.filter(prayer="duhr").last().audio.url,
-        "adan_alasr" : PrayerAudio.objects.filter(prayer="alasr").last().audio.url,
-        "adan_almaghreb" : PrayerAudio.objects.filter(prayer="almaghreb").last().audio.url,
-        "adan_alaicha" : PrayerAudio.objects.filter(prayer="alaicha").last().audio.url
-        }
-        return Response({"mosque_name":self_mosque.name,"time":prayer_json,"adan":adan_json})
+        return Response({"mosque_name":self_mosque.name,"time":prayer_json,})
 class CurrentMosqueState(APIView):
     """
     View to get current mosque connection state  

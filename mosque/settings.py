@@ -60,7 +60,7 @@ AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
     )
 REST_KNOX = {
-    'TOKEN_TTL': timedelta(days=1),
+    'TOKEN_TTL': timedelta(days=30),
 }
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
 
