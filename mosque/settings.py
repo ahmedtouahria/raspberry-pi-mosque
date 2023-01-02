@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'knox',
     #my apps
-    "adan"
+    "adan",
+    "mqtt"
 
 ]
 REST_FRAMEWORK = {
@@ -71,7 +72,8 @@ CONSTANCE_CONFIG = {
     'PRAYER_SOURCE': ("{}", 'json_field'),
     'BASE_MQTT_API_URL': ("http://142.44.163.144:18083/api/v5",'base url'),
     'MQTT_USERNAME': ("",'username of mqx'),
-    'MQTT_PASSWORD': ("",'password of mqx')
+    'MQTT_PASSWORD': ("",'password of mqx'),
+    'broker_ip': ("142.44.163.144", 'Broker address'),
 }
 
 
