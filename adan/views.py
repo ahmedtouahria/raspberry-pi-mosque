@@ -186,3 +186,23 @@ class CreatePrayerAdan(generics.CreateAPIView):
         PrayerEvent.objects.create(user=request.user,type=data.get("type"),prayer=data.get("prayer"),repeated=data.get("repeated"),audio=data.get("audio"),)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class LogoutView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes=(permissions.IsAuthenticated,)
+    @extend_schema(description='logout api', methods=["post"],parameters=[TokenSerializer],responses=(LogoutSerializer),)
+
+    def post(self, request, format=None):
+        from django.contrib.auth.signals import user_logged_in, user_logged_out
+        request._auth.delete()
+        user_logged_out.send(sender=request.user.__class__,
+                             request=request, user=request.user)
+        return Response({"sucess":True,"message":"user logout successfully"}, status=status.HTTP_200_OK)
+
+class TurnOnOffSpeaker(APIView):
+    authentication_classes=[TokenAuthentication]
+    @extend_schema(description='turn on off command', methods=["post"],parameters=[TokenSerializer],responses=(TurnOnOffSerializer),request=TurnOnOffSerializer)
+    def post(self,request,format=None):
+        command = request.data.get('command')
+        print(command)
+        return Response({"success":True,"data":command},status=status.HTTP_200_OK)

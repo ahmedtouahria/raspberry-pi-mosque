@@ -63,7 +63,7 @@ REST_KNOX = {
     'TOKEN_TTL': timedelta(days=30),
 }
 CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
-
+APPEND_SLASH=False
 CONSTANCE_ADDITIONAL_FIELDS = {
     'json_field': ['django.forms.JSONField', {}]
 }

@@ -106,3 +106,10 @@ class LoginRequestBodySerializer(serializers.Serializer):
         trim_whitespace=False,
         write_only=True
     )
+
+class TurnOnOffSerializer(serializers.Serializer):
+    command = serializers.BooleanField(
+        label=_("command"),
+    )
+class LogoutSerializer(serializers.Serializer):
+    success = serializers.BooleanField(label=_("sucess"))
