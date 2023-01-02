@@ -1,4 +1,4 @@
-""" from mqtt import mqtt_publisher
+from mqtt import mqtt_publisher
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import *
@@ -59,4 +59,3 @@ def create_prayer_audio(sender, instance, **kwargs):
     mqtt_publisher.main(topic=str(instance.user.topic), message=json_msg_publisher)
 
 
- """
