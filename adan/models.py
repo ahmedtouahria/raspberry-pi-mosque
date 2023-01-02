@@ -86,5 +86,5 @@ class Topic(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     serial_number = models.CharField(max_length=300,unique=True)
     def __str__(self):
-        return  self.serial_number
-
+        topic = "raspberry_pi/{}".format(self.serial_number)
+        return  topic
