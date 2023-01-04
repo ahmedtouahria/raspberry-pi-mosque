@@ -77,6 +77,8 @@ class Mosque(models.Model):
     topic = models.OneToOneField('adan.Topic', on_delete=models.CASCADE,null=True)
     name = models.CharField("name of mosque", max_length=150,null=True)
     status = models.BooleanField(default=False)
+    state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
+
     def __str__(self):
         return f"{self.name} is {self.status} now"
 
