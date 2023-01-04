@@ -8,7 +8,7 @@ class LiveAudioSerializers(serializers.ModelSerializer):
     class Meta:
         model=LiveEvent
         fields="__all__"
-        read_only_fields=('audio_duration',)
+        read_only_fields=('audio_duration','user')
 class PrayerAdanSerializer(serializers.ModelSerializer):
     class Meta:
         model=PrayerAudio

@@ -75,16 +75,17 @@ class PrayerEvent(models.Model):
         return f"{self.type}-{self.prayer}"
 
 class Mosque(models.Model):
-    topic = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
-    name = models.CharField("name of mosque", max_length=150)
+    topic = models.OneToOneField('adan.Topic', on_delete=models.CASCADE,null=True)
+    name = models.CharField("name of mosque", max_length=150,null=True)
     status = models.BooleanField(default=False)
-    state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
     def __str__(self):
         return f"{self.name} is {self.status} now"
 
 class Topic(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True,blank=True)
     serial_number = models.CharField(max_length=300,unique=True)
+    state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
+    
     def __str__(self):
         topic = "raspberry_pi/{}".format(self.serial_number)
         return  topic

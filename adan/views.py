@@ -53,7 +53,7 @@ class LiveEventView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        serializer.save(user=request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 class CreateAfterBeforePrayer(generics.CreateAPIView):
@@ -106,8 +106,8 @@ class CurrentPrayerTime(APIView):
         """
         Return a current day prayer time 
         """
-        self_user = request.user
-        self_mosque = Mosque.objects.filter(topic=self_user).first()
+        self_topic = request.user.topic
+        self_mosque = Mosque.objects.filter(topic=self_topic).first()
         print(self_mosque)
         current_date_mounth = datetime.today().month
         current_date_day = datetime.today().day
@@ -183,7 +183,7 @@ class CreatePrayerAdan(generics.CreateAPIView):
         data=request.data
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        PrayerEvent.objects.create(user=request.user,type=data.get("type"),prayer=data.get("prayer"),repeated=data.get("repeated"),audio=data.get("audio"),)
+        serializer.save(user=request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
