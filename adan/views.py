@@ -90,7 +90,7 @@ class CreateAfterBeforePrayer(generics.CreateAPIView):
         data=request.data
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        PrayerEvent.objects.create(user=request.user,type=data.get("type"),prayer=data.get("prayer"),repeated=data.get("repeated"),audio=data.get("audio"),)
+        PrayerEvent.objects.create(user=request.user,type=data.get("type"),prayer=data.get("prayer"),audio=data.get("audio"),)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 class CurrentPrayerTime(APIView):

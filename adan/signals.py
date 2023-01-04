@@ -13,7 +13,7 @@ def create_live_event(sender, instance, **kwargs):
 		"model": "LiveEvent",
 		"name": instance.name,
 		"user": instance.user.id,
-		"audio": instance.audio.url,
+		"audio": f"http://142.44.163.144:8000{instance.audio.url}",
 		# "audio": "http://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/intromusic.ogg",
 		"audio_duration": instance.audio_duration
 	}}
