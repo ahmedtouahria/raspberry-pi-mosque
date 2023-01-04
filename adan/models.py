@@ -62,7 +62,7 @@ class PrayerEvent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.CharField(max_length=50,choices=TYPE)
     name = models.CharField(max_length=120,null=True)
-    repeated = models.BooleanField(default=True)
+    repeated = models.BooleanField(default=True,null=True)
     prayer = models.CharField(max_length=50,choices=PRAYER)
     audio = models.FileField(upload_to="prayer_event", max_length=250,null=True,blank=True)
     audio_duration = models.PositiveIntegerField(null=True,blank=True)
