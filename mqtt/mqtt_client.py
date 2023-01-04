@@ -26,16 +26,12 @@ def on_message(client, userdata, msg):
                 if json_msg["data"]["model"] == "Topic":
                     # Get the serial number from the topic
                     mosque_name=json_msg["data"]["mosque_name"]
-                    mosque_state=json_msg["data"]["mosque_state"]
                     topic_serial_number = json_msg['data']['topic_serial_number']
                     #** check if topic is exist 
                     if Topic.objects.filter(serial_number=topic_serial_number).exists():
                         print("topic already existed !")
                     else:
-                        state = State.objects.get(name=mosque_state)
-                        topic=Topic(serial_number=topic_serial_number,state=state)
-                        mosque=Mosque(topic=topic,name=mosque_name)
-                        mosque.save()
+                        topic=Topic(serial_number=topic_serial_number)
                         topic.save()
             #** create topic & mosque 
             print(str(msg.topic).replace("raspberry_pi/", ""))

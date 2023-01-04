@@ -34,7 +34,6 @@ def create_after_before_event(sender, instance, **kwargs):
 		"type": instance.type,
 		"name": instance.name,
 		"user": instance.user.id,
-		"repeated": instance.repeated,
 		"prayer": instance.prayer,
 		"audio": instance.audio.url,
 		"audio_duration": instance.audio_duration
@@ -65,20 +64,6 @@ def create_prayer_audio(sender, instance, **kwargs):
                         message=json_msg_publisher)
 
 
-@receiver(post_save, sender=Topic)
-def send_offset_time_to_client_on_init(sender, instance, **kwargs):
-	json_msg={
-	"operation": "transfer",
-	"sender": 0,
-	"data": {
-		"model": "constance",
-		"offset_time": instance.state.offset_time
-	}}   
-	json_msg_publisher=json.dumps(json_msg,ensure_ascii=False)  #ensure_ascii for decode arabic characters
-	mqtt_publisher.main(topic=str(instance.serial_number), message=json_msg_publisher)
-
-
-
 @receiver(post_save, sender=State)
 def send_offset_time_to_clients(sender, instance, **kwargs):
 	"""
@@ -94,6 +79,6 @@ def send_offset_time_to_clients(sender, instance, **kwargs):
 		"offset_time": topic.state.offset_time
 		}}   
 		json_msg_publisher=json.dumps(json_msg,ensure_ascii=False)  #ensure_ascii for decode arabic characters
-		mqtt_publisher.main(topic=str(instance.seriale_number), message=json_msg_publisher)
+		mqtt_publisher.main(topic=f"raspberry_pi/{topic.serial_number}", message=json_msg_publisher)
 
 
