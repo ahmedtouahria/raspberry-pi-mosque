@@ -6,27 +6,29 @@ from .models import *
 
 @receiver(post_save, sender=LiveEvent)
 def create_live_event(sender, instance, **kwargs):
-    json_msg = {
+	DOMAIN_NAME = config.DOMAIN_NAME
+	json_msg ={
 	"operation": "transfer",
 	"sender": 0,
 	"data": {
 		"model": "LiveEvent",
 		"name": instance.name,
 		"user": instance.user.id,
-		"audio": f"http://142.44.163.144:8000{instance.audio.url}",
-		# "audio": "http://commondatastorage.googleapis.com/codeskulptor-demos/pyman_assets/intromusic.ogg",
-		"audio_duration": instance.audio_duration
+		"audio": f"{DOMAIN_NAME}/{instance.audio.url}",
+		"audio_duration": instance.audio_duration,
+		"created_at":instance.created_at
 	}}
-    print(instance.user.topic)
-    self_topic = instance.user.topic
-    # ensure_ascii for decode arabic characters
-    json_msg_publisher = json.dumps(json_msg, ensure_ascii=False)
-    mqtt_publisher.main(topic=str(self_topic), message=json_msg_publisher)
+	#print(instance.user.topic)
+	self_topic = instance.user.topic
+	# ensure_ascii for decode arabic characters
+	json_msg_publisher = json.dumps(json_msg, ensure_ascii=False,default=str)
+	mqtt_publisher.main(topic=f"raspberry_pi/{self_topic}", message=json_msg_publisher)
 
 
 @receiver(post_save, sender=PrayerEvent)
 def create_after_before_event(sender, instance, **kwargs):
-    json_msg = {
+	DOMAIN_NAME = config.DOMAIN_NAME
+	json_msg = {
 	"operation": "transfer",
 	"sender": 0,
 	"data": {
@@ -35,50 +37,67 @@ def create_after_before_event(sender, instance, **kwargs):
 		"name": instance.name,
 		"user": instance.user.id,
 		"prayer": instance.prayer,
-		"audio": instance.audio.url,
-		"audio_duration": instance.audio_duration
+		"audio": f"{DOMAIN_NAME}/{instance.audio.url}",
+		"audio_duration": instance.audio_duration,
+		"created_at":instance.created_at
 	}}
-    # print(instance.user.topic)
+	# print(instance.user.topic)
 
-    # ensure_ascii for decode arabic characters
-    json_msg_publisher = json.dumps(json_msg, ensure_ascii=False)
-    mqtt_publisher.main(topic=str(instance.user.topic),
-                        message=json_msg_publisher)
+	# ensure_ascii for decode arabic characters
+	json_msg_publisher = json.dumps(json_msg, ensure_ascii=False,default=str)
+	mqtt_publisher.main(topic=f'raspberry_pi/{instance.user.topic}',
+						message=json_msg_publisher)
 
 
 @receiver(post_save, sender=PrayerAudio)
 def create_prayer_audio(sender, instance, **kwargs):
-    json_msg = {
+	DOMAIN_NAME = config.DOMAIN_NAME
+	json_msg ={
 	"operation": "transfer",
 	"sender": 0,
 	"data": {
 		"model": "PrayerAudio",
 		"prayer": instance.prayer,
 		"user": instance.user.id,
-		"audio": instance.audio.url,
+		"audio": f"{DOMAIN_NAME}/{instance.audio.url}",
 		"audio_duration": instance.audio_duration
 	}}
-    # ensure_ascii for decode arabic characters
-    json_msg_publisher = json.dumps(json_msg, ensure_ascii=False)
-    mqtt_publisher.main(topic=str(instance.user.topic),
-                        message=json_msg_publisher)
+	# ensure_ascii for decode arabic characters
+	json_msg_publisher = json.dumps(json_msg, ensure_ascii=False,default=str)
+	mqtt_publisher.main(topic=f"raspberry_pi/{instance.user.topic}",
+						message=json_msg_publisher)
 
 
 @receiver(post_save, sender=State)
 def send_offset_time_to_clients(sender, instance, **kwargs):
 	"""
-	* this signal for forward offset_time to state topics
+	* this signal for forward offset_time to all instance state topics
 	"""
-	topics = Topic.objects.filter(state=instance)
-	for topic in topics:
+	mosques = Mosque.objects.filter(state=instance)
+	for mosque in mosques:
+		current_topic = mosque.topic
 		json_msg={
 		"operation": "transfer",
 		"sender": 0,
 		"data": {
 		"model": "constance",
-		"offset_time": topic.state.offset_time
-		}}   
+		"offset_time": current_topic.state.offset_time
+		}} 
 		json_msg_publisher=json.dumps(json_msg,ensure_ascii=False)  #ensure_ascii for decode arabic characters
-		mqtt_publisher.main(topic=f"raspberry_pi/{topic.serial_number}", message=json_msg_publisher)
+		mqtt_publisher.main(topic=f"raspberry_pi/{current_topic.serial_number}", message=json_msg_publisher)
 
 
+@receiver(post_save, sender=Mosque)
+def send_offset_time_to_client(sender, instance, **kwargs):
+	"""
+	* this signal for forward offset_time to self mosque topic
+	"""
+	json_msg={
+		"operation": "transfer",
+		"sender": 0,
+		"data": {
+		"model": "constance",
+		"offset_time": instance.state.offset_time
+		}} 
+	json_msg_publisher=json.dumps(json_msg,ensure_ascii=False)  #ensure_ascii for decode arabic characters
+	mqtt_publisher.main(topic=f"raspberry_pi/{instance.topic.serial_number}", message=json_msg_publisher)

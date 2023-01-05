@@ -13,7 +13,7 @@ class PrayerAdanSerializer(serializers.ModelSerializer):
     class Meta:
         model=PrayerAudio
         fields="__all__"
-        read_only_fields=('audio_duration',)
+        read_only_fields=('audio_duration','user')
 
 class AfterBeforePrayerSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())

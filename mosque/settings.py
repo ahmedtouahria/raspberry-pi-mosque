@@ -74,6 +74,7 @@ CONSTANCE_CONFIG = {
     'MQTT_USERNAME': ("",'username of mqx'),
     'MQTT_PASSWORD': ("",'password of mqx'),
     'broker_ip': ("142.44.163.144", 'Broker address'),
+    "DOMAIN_NAME":('http://142.44.163.144','domain name')
 }
 
 

@@ -1,8 +1,7 @@
 from .serializers import *
-from rest_framework import viewsets,generics,permissions,status,authentication
+from rest_framework import generics,permissions,status
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
 from django.contrib.auth import login
@@ -90,7 +89,7 @@ class CreateAfterBeforePrayer(generics.CreateAPIView):
         data=request.data
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
-        PrayerEvent.objects.create(user=request.user,type=data.get("type"),prayer=data.get("prayer"),audio=data.get("audio"),)
+        serializer.save(user=request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 class CurrentPrayerTime(APIView):
@@ -107,13 +106,22 @@ class CurrentPrayerTime(APIView):
         Return a current day prayer time 
         """
         self_topic = request.user.topic
-        self_mosque = Mosque.objects.filter(topic=self_topic).first()
-        print(self_mosque)
-        current_date_mounth = datetime.today().month
-        current_date_day = datetime.today().day
-        id_day = (current_date_mounth-1)*30+current_date_day # get current day id 
-        prayer_json =self_mosque.state.prayer_time["data"][id_day]
-        return Response({"mosque_name":self_mosque.name,"time":prayer_json,})
+        try:
+            self_mosque = Mosque.objects.get(topic=self_topic)
+        except:
+            self_mosque=None
+        if self_mosque:
+            current_date_mounth = datetime.today().month
+            current_date_day = datetime.today().day
+            id_day = (current_date_mounth-1)*30+current_date_day # get current day id
+            try: 
+                prayer_json =self_mosque.state.prayer_time["data"][id_day]
+                print(prayer_json)
+            except Exception as e:
+                return Response({"success":False,"error":e})
+            return Response({"mosque_name":self_mosque.name,"time":prayer_json,})
+        else:
+            return Response({"success":False,"message":"your mosque not linked with your account"})
 class CurrentMosqueState(APIView):
     """
     View to get current mosque connection state  
@@ -146,7 +154,7 @@ class CurrentMosqueState(APIView):
                     else:
                         return Response({"status":False})
                 except:
-                    return Response(response_dict)
+                    return Response({"status":False,"message":response_dict})
         else: return Response({"success":False,"message":'Topic id does not exist'})
 
 class CreatePrayerAdan(generics.CreateAPIView):
