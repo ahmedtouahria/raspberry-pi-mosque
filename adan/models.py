@@ -33,8 +33,7 @@ class LiveEvent(models.Model):
         self.audio_duration=int(audio_info.length)
        super(LiveEvent, self).save(*args, **kwargs) # Call the real save() method
     def __str__(self):
-        return str(self.name)
-
+        return str(self.name) if self.name else f"audio--{self.id}"
 class State(models.Model):
     name = models.CharField("state name", max_length=120)
     offset_time = models.IntegerField()
