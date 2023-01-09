@@ -146,6 +146,7 @@ class CurrentMosqueState(APIView):
             topic=None
         if topic:
                 response = requests.get(f'{BASE_URL}/clients/{topic.serial_number}', auth=(username, password))
+                print(topic.serial_number)
                 print(json.loads(response.text))
                 response_dict = json.loads(response.text)
                 try:
