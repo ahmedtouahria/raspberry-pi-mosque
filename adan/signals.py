@@ -19,7 +19,7 @@ def create_live_event(sender, instance, **kwargs):
 		"created_at":instance.created_at
 	}}
 	#print(instance.user.topic)
-	self_topic = instance.user.topic
+	self_topic = instance.user.topic.serial_number
 	# ensure_ascii for decode arabic characters
 	json_msg_publisher = json.dumps(json_msg, ensure_ascii=False,default=str)
 	mqtt_publisher.main(topic=f"raspberry_pi/{self_topic}", message=json_msg_publisher)
@@ -45,7 +45,7 @@ def create_after_before_event(sender, instance, **kwargs):
 
 	# ensure_ascii for decode arabic characters
 	json_msg_publisher = json.dumps(json_msg, ensure_ascii=False,default=str)
-	mqtt_publisher.main(topic=f'raspberry_pi/{instance.user.topic}',
+	mqtt_publisher.main(topic=f'raspberry_pi/{instance.user.topic.serial_number}',
 						message=json_msg_publisher)
 
 
@@ -64,7 +64,7 @@ def create_prayer_audio(sender, instance, **kwargs):
 	}}
 	# ensure_ascii for decode arabic characters
 	json_msg_publisher = json.dumps(json_msg, ensure_ascii=False,default=str)
-	mqtt_publisher.main(topic=f"raspberry_pi/{instance.user.topic}",
+	mqtt_publisher.main(topic=f"raspberry_pi/{instance.user.topic.serial_number}",
 						message=json_msg_publisher)
 
 
