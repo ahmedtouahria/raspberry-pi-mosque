@@ -44,12 +44,12 @@ class State(models.Model):
         prayer_source=json.loads(config.PRAYER_SOURCE)["data"]
         new_dictionary = {"data":[]}
         for prayer in prayer_source :
-            elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
-            duhr=(datetime.strptime(prayer["duhr"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
-            alasr=(datetime.strptime(prayer["alasr"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
-            almaghreb=(datetime.strptime(prayer["almaghreb"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
-            alaicha=(datetime.strptime(prayer["alaicha"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
-            chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
+            elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M')+timedelta(minutes=self.offset_time)).time()
+            duhr=(datetime.strptime(prayer["duhr"], '%H:%M')+timedelta(minutes=self.offset_time)).time()
+            alasr=(datetime.strptime(prayer["alasr"], '%H:%M')+timedelta(minutes=self.offset_time)).time()
+            almaghreb=(datetime.strptime(prayer["almaghreb"], '%H:%M')+timedelta(minutes=self.offset_time)).time()
+            alaicha=(datetime.strptime(prayer["alaicha"], '%H:%M')+timedelta(minutes=self.offset_time)).time()
+            chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M')+timedelta(minutes=self.offset_time)).time()
             new_dictionary_item = {"id":prayer["id"],"date":prayer["date"],"elfajer":str(elfajer),"chorouk":str(chorouk),"duhr":str(duhr),"alasr":str(alasr),"almaghreb":str(almaghreb),"alaicha":str(alaicha)}
             new_dictionary["data"].append(new_dictionary_item)
             self.prayer_time=new_dictionary

@@ -81,7 +81,7 @@ def send_offset_time_to_clients(sender, instance, **kwargs):
 		"sender": 0,
 		"data": {
 		"model": "constance",
-		"offset_time": current_topic.state.offset_time
+		"offset_time": mosque.state.offset_time
 		}} 
 		json_msg_publisher=json.dumps(json_msg,ensure_ascii=False)  #ensure_ascii for decode arabic characters
 		mqtt_publisher.main(topic=f"raspberry_pi/{current_topic.serial_number}", message=json_msg_publisher)
