@@ -92,6 +92,7 @@ class CreateAfterBeforePrayer(generics.CreateAPIView):
         serializer.save(user=request.user)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+from hijri_converter import Gregorian,Hijri
 class CurrentPrayerTime(APIView):
     """
     View to get current prayer time 
@@ -116,10 +117,17 @@ class CurrentPrayerTime(APIView):
             id_day = (current_date_mounth-1)*30+current_date_day # get current day id
             try: 
                 prayer_json =self_mosque.state.prayer_time["data"][id_day]
-                print(prayer_json)
+                date_today = datetime.today()
+                milad_date=hijri_date = Gregorian(date_today.year,date_today.month,date_today.day)
+                hijri_date = milad_date.to_hijri()
+                hijri_date_ar = Hijri(hijri_date.year,hijri_date.month,hijri_date.day)
+                hijri_date_display = f" {hijri_date_ar.day_name('ar')} - {hijri_date.day}  {hijri_date_ar.month_name('ar')} - {hijri_date.year}"
+                miladi_date_display = f"{milad_date.day_name('ar')} {date_today.day} {milad_date.month_name('ar')} {date_today.year}"
+
+                print(milad_date.month_name('ar'))
             except Exception as e:
                 return Response({"success":False,"error":e})
-            return Response({"mosque_name":self_mosque.name,"time":prayer_json,})
+            return Response({"mosque_name":self_mosque.name,"time":prayer_json,"day_hijri":hijri_date_display,"miladi_date":miladi_date_display})
         else:
             return Response({"success":False,"message":"your mosque not linked with your account"})
 class CurrentMosqueState(APIView):
