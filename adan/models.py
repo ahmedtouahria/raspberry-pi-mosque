@@ -38,6 +38,8 @@ class State(models.Model):
     name = models.CharField("state name", max_length=120)
     offset_time = models.IntegerField()
     prayer_time = models.JSONField("prayer data time",null=True,blank=True)
+    prayer_time_am_pm = models.JSONField("prayer data time with am pm",null=True,blank=True)
+
     def __str__(self):
         return self.name
     def save(self, *args, **kwargs):
@@ -53,7 +55,18 @@ class State(models.Model):
             new_dictionary_item = {"id":prayer["id"],"date":prayer["date"],"elfajer":str(elfajer),"chorouk":str(chorouk),"duhr":str(duhr),"alasr":str(alasr),"almaghreb":str(almaghreb),"alaicha":str(alaicha)}
             new_dictionary["data"].append(new_dictionary_item)
             self.prayer_time=new_dictionary
-            print(alasr)
+        prayer_source_am_pm=json.loads(config.PRAYER_SOURCE_AM_PM)["data"]
+        new_dictionary_am_pm = {"data":[]}
+        for prayer in prayer_source_am_pm :
+            elfajer=(datetime.strptime(prayer["elfajer"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
+            duhr=(datetime.strptime(prayer["duhr"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
+            alasr=(datetime.strptime(prayer["alasr"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
+            almaghreb=(datetime.strptime(prayer["almaghreb"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
+            alaicha=(datetime.strptime(prayer["alaicha"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
+            chorouk=(datetime.strptime(prayer["chorouk"], '%H:%M %p')+timedelta(minutes=self.offset_time)).time()
+            new_dictionary_item = {"id":prayer["id"],"date":prayer["date"],"elfajer":str(elfajer),"chorouk":str(chorouk),"duhr":str(duhr),"alasr":str(alasr),"almaghreb":str(almaghreb),"alaicha":str(alaicha)}
+            new_dictionary_am_pm["data"].append(new_dictionary_item)
+            self.prayer_time_am_pm=new_dictionary_am_pm
         super(State, self).save(*args, **kwargs) # Call the real save() method
 
 class PrayerEvent(models.Model):

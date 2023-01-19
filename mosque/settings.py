@@ -70,6 +70,7 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 
 CONSTANCE_CONFIG = {
     'PRAYER_SOURCE': ("{}", 'json_field'),
+    'PRAYER_SOURCE_AM_PM': ("{}", 'json_field'),
     'BASE_MQTT_API_URL': ("http://142.44.163.144:18083/api/v5",'base url'),
     'MQTT_USERNAME': ("",'username of mqx'),
     'MQTT_PASSWORD': ("",'password of mqx'),

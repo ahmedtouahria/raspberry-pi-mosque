@@ -116,18 +116,35 @@ class CurrentPrayerTime(APIView):
             current_date_day = datetime.today().day
             id_day = (current_date_mounth-1)*30+current_date_day # get current day id
             try: 
-                prayer_json =self_mosque.state.prayer_time["data"][id_day]
+                prayer_json =self_mosque.state.prayer_time_am_pm["data"][id_day]
+                prayer_json_without_pm =self_mosque.state.prayer_time["data"][id_day]
+                current_time = datetime.now().time()
+                elfajer_time = datetime.strptime(prayer_json_without_pm["elfajer"],"%H:%M:%S")
+                duhr_time = datetime.strptime(prayer_json_without_pm["duhr"],"%H:%M:%S")
+                alasr_time = datetime.strptime(prayer_json_without_pm["alasr"],"%H:%M:%S")
+                almghreb_time = datetime.strptime(prayer_json_without_pm["almaghreb"],"%H:%M:%S")
+                alaicha_time = datetime.strptime(prayer_json_without_pm["alaicha"],"%H:%M:%S")
+                from .utils import get_time_near_prayer,get_total_seconds
+                time_now_seconds = current_time.hour*3600+current_time.minute*60+current_time.second
+                remaining = get_time_near_prayer(date_now_seconds=time_now_seconds,elfajer=elfajer_time,duhr=duhr_time,alasr=alasr_time,
+                almaghreb=almghreb_time,alaicha=alaicha_time
+                )
+                prayer_detect_time = datetime.strptime(prayer_json_without_pm[f"{remaining[1]}"],"%H:%M:%S")
+                prayer_detect_time_seconds = get_total_seconds(prayer_detect_time)
+                status = "-"
+                if prayer_detect_time_seconds-time_now_seconds<0:
+                    status="+"
+                else:
+                    status="-"
                 date_today = datetime.today()
                 milad_date=hijri_date = Gregorian(date_today.year,date_today.month,date_today.day)
                 hijri_date = milad_date.to_hijri()
                 hijri_date_ar = Hijri(hijri_date.year,hijri_date.month,hijri_date.day)
                 hijri_date_display = f" {hijri_date_ar.day_name('ar')} - {hijri_date.day}  {hijri_date_ar.month_name('ar')} - {hijri_date.year}"
                 miladi_date_display = f"{milad_date.day_name('ar')} {date_today.day} {milad_date.month_name('ar')} {date_today.year}"
-
-                print(milad_date.month_name('ar'))
             except Exception as e:
-                return Response({"success":False,"error":e})
-            return Response({"mosque_name":self_mosque.name,"time":prayer_json,"day_hijri":hijri_date_display,"miladi_date":miladi_date_display})
+                return Response({"success":False,"error":str(e)})
+            return Response({"mosque_name":self_mosque.name,"time":prayer_json,"day_hijri":hijri_date_display,"miladi_date":miladi_date_display,"remaining":f'{status}{remaining[0]}',"near_prayer":remaining[1]})
         else:
             return Response({"success":False,"message":"your mosque not linked with your account"})
 class CurrentMosqueState(APIView):
