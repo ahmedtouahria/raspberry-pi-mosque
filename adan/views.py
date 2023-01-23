@@ -104,7 +104,7 @@ class CurrentPrayerTime(APIView):
     @extend_schema(description='adan Login api ', methods=["get"],parameters=[TokenSerializer],responses=(PrayerSerializer),)
     def get(self, request, format=None):
         """
-        Return a current day prayer time 
+        * Return a current day prayer time 
         """
         self_topic = request.user.topic
         try:
@@ -237,9 +237,10 @@ class TurnOnOffSpeaker(APIView):
     authentication_classes=[TokenAuthentication]
     @extend_schema(description='turn on off command', methods=["post"],parameters=[TokenSerializer],responses=(TurnOnOffSerializer),request=TurnOnOffSerializer)
     def post(self,request,format=None):
-        command = request.data.get('command')
-        print(command)
-        return Response({"success":True,"data":command},status=status.HTTP_200_OK)
+        command = request.data.get('command',None)
+        if command:
+            return Response({"success":True,"data":{"command":True}},status=status.HTTP_200_OK)
+        else: return Response({"success":False,"message":"command must be not null"},status=status.HTTP_400_BAD_REQUEST)
     @extend_schema(description='get turn on off command', methods=["get"],parameters=[TokenSerializer],responses=(TurnOnOffSerializer))
     def get(self,request,format=None):
         return Response({"command":True},status=status.HTTP_200_OK)
