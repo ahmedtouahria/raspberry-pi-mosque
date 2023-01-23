@@ -239,7 +239,7 @@ class TurnOnOffSpeaker(APIView):
     def post(self,request,format=None):
         command = request.data.get('command',None)
         if command is not None:
-            return Response({"success":True,"data":{"command":True}},status=status.HTTP_200_OK)
+            return Response({"success":True,"data":{"command":command}},status=status.HTTP_200_OK)
         else: return Response({"success":False,"message":"command must be not null"},status=status.HTTP_400_BAD_REQUEST)
     @extend_schema(description='get turn on off command', methods=["get"],parameters=[TokenSerializer],responses=(TurnOnOffSerializer))
     def get(self,request,format=None):
