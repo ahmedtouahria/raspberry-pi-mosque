@@ -6,7 +6,7 @@ from django.conf import settings
 from constance import config
 
 from adan.models import Topic,Mosque,State
-
+SPEAKER_STATE=""
 # The callback for when the client receives a CONNACK response from the server.
 
 def on_connect(client, userdata, flags, rc):
@@ -33,13 +33,16 @@ def on_message(client, userdata, msg):
                     else:
                         topic=Topic(serial_number=topic_serial_number)
                         topic.save()
+            elif json_msg ["operation"]=="transfer":
+                if json_msg["data"]["model"]=="Plug":
+                    SPEAKER_STATE=json_msg["data"]["state"]
+                    config.SPEAKER_STATE=False if SPEAKER_STATE =="off" else True
             #** create topic & mosque 
             print(str(msg.topic).replace("raspberry_pi/", ""))
             # Get the topic
             print(str(msg.topic))
     except Exception as e:
         print(e)
-
 
 def main():
     client = mqtt.Client(client_id="API", clean_session=False)

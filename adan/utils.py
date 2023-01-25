@@ -21,3 +21,4 @@ def get_time_near_prayer(date_now_seconds,elfajer,duhr,alasr,almaghreb,alaicha):
     minutes = int((min_time/60)%60)
     secondes = int(min_time%60)
     return f"{hour}:{minutes}:{secondes}",dectinary_prayer[f"{min_time}"]
+

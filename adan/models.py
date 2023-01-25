@@ -86,13 +86,23 @@ class PrayerEvent(models.Model):
     def __str__(self):
         return f"{self.type}-{self.prayer}"
 
+
+class Plug(models.Model):
+    topic = models.ForeignKey('adan.mosque', on_delete=models.CASCADE)
+    name = models.CharField(max_length=120,blank=True, null=True)
+    state = models.BooleanField(default=False)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.name} - {self.topic}"
+
+
 class Mosque(models.Model):
-    topic = models.OneToOneField('adan.Topic', on_delete=models.CASCADE,null=True)
+    topic = models.OneToOneField('adan.topic', on_delete=models.CASCADE,null=True)
     name = models.CharField("name of mosque", max_length=150,null=True)
     status = models.BooleanField(default=False)
     state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
     def __str__(self):
-        return f"{self.name} is {self.status} now"
+        return f"{self.name}"
 
 class Topic(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,null=True,blank=True)
