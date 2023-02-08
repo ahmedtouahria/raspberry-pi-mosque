@@ -284,7 +284,7 @@ class TurnOnOffSpeaker(APIView):
                     "state": "on" if command == True else "off"
                 }
             }
-            print(json_msg)
+            #print(json_msg)
             # ensure_ascii for decode arabic characters
             json_msg_publisher = json.dumps(json_msg, ensure_ascii=False)
             if self_mosque is not None:
@@ -296,5 +296,9 @@ class TurnOnOffSpeaker(APIView):
 
     @extend_schema(description='get turn on off command', methods=["get"], parameters=[TokenSerializer], responses=(TurnOnOffSerializer))
     def get(self, request, format=None):
-        return Response({"command": config.SPEAKER_STATE}, status=status.HTTP_200_OK)
+        try:mosque = Mosque.objects.get(topic__user=request.user)
+        except:mosque=None
+        if mosque is None:
+            return Response({"error":True,"msg":"mosque does not have this topic"})
+        return Response({"command": mosque.status}, status=status.HTTP_200_OK)
 

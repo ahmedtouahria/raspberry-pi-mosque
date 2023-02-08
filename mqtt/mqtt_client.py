@@ -21,26 +21,34 @@ def on_message(client, userdata, msg):
     try:
         brut_text = str(msg.payload.decode("utf-8"))
         json_msg = json.loads(brut_text)
+        print("json_msg",json_msg)
         if json_msg["sender"] == 1:
             if json_msg["operation"] == "init":
                 if json_msg["data"]["model"] == "Topic":
-                    # Get the serial number from the topic
+                    # Get the the mosque name 
                     mosque_name=json_msg["data"]["mosque_name"]
+                    # Get the serial number from the topic
                     topic_serial_number = json_msg['data']['topic_serial_number']
                     #** check if topic is exist 
                     if Topic.objects.filter(serial_number=topic_serial_number).exists():
-                        print("topic already existed !")
+                        topic=Topic.objects.get(serial_number=topic_serial_number)
                     else:
-                        topic=Topic(serial_number=topic_serial_number)
+                        topic=Topic(serial_number=topic_serial_number,name=mosque_name)
                         topic.save()
+                    if not Mosque.objects.filter(topic=topic).exists():
+                        Mosque.objects.create(topic=topic,name=mosque_name)
             elif json_msg ["operation"]=="transfer":
                 if json_msg["data"]["model"]=="Plug":
+                    print(json_msg)
                     SPEAKER_STATE=json_msg["data"]["state"]
-                    config.SPEAKER_STATE=False if SPEAKER_STATE =="off" else True
+                    serial_number=json_msg["data"]["topic_serial_number"]
+                    try:topic = Topic.objects.get(serial_number=serial_number)
+                    except:topic=None
+                    if topic:
+                        status = False if SPEAKER_STATE =="off" else True
+                        Mosque.objects.filter(topic=topic).update(status=status)
             #** create topic & mosque 
-            print(str(msg.topic).replace("raspberry_pi/", ""))
             # Get the topic
-            print(str(msg.topic))
     except Exception as e:
         print(e)
 
