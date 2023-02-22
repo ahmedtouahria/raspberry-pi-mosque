@@ -1,6 +1,5 @@
 from hijri_converter import Gregorian, Hijri
 from mqtt import mqtt_publisher
-from mqtt.mqtt_client import SPEAKER_STATE
 from .serializers import *
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -300,5 +299,5 @@ class TurnOnOffSpeaker(APIView):
         except:mosque=None
         if mosque is None:
             return Response({"error":True,"msg":"mosque does not have this topic"})
-        return Response({"command": mosque.status}, status=status.HTTP_200_OK)
+        return Response({"command": mosque.speaker_status}, status=status.HTTP_200_OK)
 

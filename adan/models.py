@@ -99,7 +99,8 @@ class Plug(models.Model):
 class Mosque(models.Model):
     topic = models.OneToOneField('adan.topic', on_delete=models.CASCADE,null=True)
     name = models.CharField("name of mosque", max_length=150,null=True)
-    status = models.BooleanField(default=False)
+    speaker_status = models.BooleanField(default=False,help_text="speaker status")
+    status = models.BooleanField(default=False,help_text="raspbery pi status")
     state = models.ForeignKey(State, on_delete=models.CASCADE,null=True,blank=True)
     def __str__(self):
         return f"{self.name}"
@@ -109,5 +110,5 @@ class Topic(models.Model):
     serial_number = models.CharField(max_length=300,unique=True)
     name = models.CharField(max_length=120,null=True,blank=True)
     def __str__(self):
-        topic = "raspberry_pi/{}".format(self.serial_number)
+        topic = f" {self.serial_number} || {self.name} "
         return  topic
