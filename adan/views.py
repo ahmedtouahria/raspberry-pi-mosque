@@ -208,7 +208,7 @@ class CurrentMosqueState(APIView):
             except:
                 return Response({"status": False, "message": response_dict})
         else:
-            return Response({"success": True, "message": 'Topic id does not exist'})
+            return Response({"success": False, "message": 'Topic id does not exist'})
 
 
 class CreatePrayerAdan(generics.CreateAPIView):
