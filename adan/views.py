@@ -206,7 +206,7 @@ class CurrentMosqueState(APIView):
                 else:
                     return Response({"status": False})
             except:
-                return Response({"status": False, "message": response_dict})
+                return Response({"status": True, "message": response_dict})
         else:
             return Response({"success": False, "message": 'Topic id does not exist'})
 
