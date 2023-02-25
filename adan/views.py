@@ -167,7 +167,7 @@ class CurrentPrayerTime(APIView):
                 miladi_date_display = f"{milad_date.day_name('ar')} {date_today.day} {milad_date.month_name('ar')} {date_today.year}"
             except Exception as e:
                 return Response({"success": False, "error": str(e)})
-            return Response({"mosque_name": self_mosque.name, "time": prayer_json, "day_hijri": hijri_date_display, "miladi_date": miladi_date_display, "remaining": f'{status}{remaining[0]}', "near_prayer": remaining[1]})
+            return Response({"mosque_name": self_mosque.name, "time": prayer_json, "day_hijri": hijri_date_display, "miladi_date": miladi_date_display, "remaining": f'{remaining[0]}', "near_prayer": remaining[1]})
         else:
             return Response({"success": False, "message": "your mosque not linked with your account"})
 
@@ -198,7 +198,6 @@ class CurrentMosqueState(APIView):
         if topic:
             response = requests.get(
                 f'{BASE_URL}/clients/{topic.serial_number}', auth=(username, password))
-            print(topic.serial_number)
             print(json.loads(response.text))
             response_dict = json.loads(response.text)
             try:
@@ -209,7 +208,7 @@ class CurrentMosqueState(APIView):
             except:
                 return Response({"status": False, "message": response_dict})
         else:
-            return Response({"success": False, "message": 'Topic id does not exist'})
+            return Response({"success": True, "message": 'Topic id does not exist'})
 
 
 class CreatePrayerAdan(generics.CreateAPIView):

@@ -11,6 +11,7 @@ from adan.models import Topic,Mosque,State
 def on_connect(client, userdata, flags, rc):
     print("\n",datetime.now(), "  ", "Connected with result code : 0")
     client.subscribe("raspberry_pi/#", qos=1)
+
 def get_mosque_status(topic)->bool:
     """
     get raspbery pi topic status on realtime

@@ -18,7 +18,6 @@ def main(topic, message):
     client.on_connect = on_connect
     client.connect(config.broker_ip, 1883, 60)
     client.publish(topic, message, qos=1)
-
 if __name__ == '__main__':
 	main()
 	sys.exit(0)
