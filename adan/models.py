@@ -112,3 +112,4 @@ class Topic(models.Model):
     def __str__(self):
         topic = f" {self.serial_number} || {self.name} "
         return  topic
+

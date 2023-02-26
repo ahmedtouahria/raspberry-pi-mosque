@@ -196,8 +196,11 @@ class CurrentMosqueState(APIView):
         except Topic.DoesNotExist:
             topic = None
         if topic:
+            headers = {
+            'Authorization': f'Bearer {config.EMQX_TOKEN}'
+            }
             response = requests.get(
-                f'{BASE_URL}/clients/{topic.serial_number}', auth=(username, password))
+                f'{BASE_URL}/clients/{topic.serial_number}', headers=headers)
             print(json.loads(response.text))
             response_dict = json.loads(response.text)
             try:
@@ -206,7 +209,7 @@ class CurrentMosqueState(APIView):
                 else:
                     return Response({"status": False})
             except:
-                return Response({"status": True, "message": response_dict})
+                return Response({"status": False, "message": response_dict})
         else:
             return Response({"success": False, "message": 'Topic id does not exist'})
 

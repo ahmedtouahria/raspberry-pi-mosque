@@ -77,11 +77,8 @@ CONSTANCE_CONFIG = {
     'broker_ip': ("142.44.163.144", 'Broker address'),
     "DOMAIN_NAME":('http://142.44.163.144:8000','domain name'),
     "SPEAKER_STATE":(False,'speaker state'),
-
+    "EMQX_TOKEN":("",'emqx api token '),
 }
-
-
-
 
 
 SPECTACULAR_SETTINGS = {
