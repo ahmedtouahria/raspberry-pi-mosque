@@ -19,10 +19,11 @@ def get_mosque_status(topic)->bool:
     import requests
     from constance import config
     BASE_URL = config.BASE_MQTT_API_URL
-    username = config.MQTT_USERNAME
-    password = config.MQTT_PASSWORD
+    headers = { 
+            'Authorization': f'Bearer {config.EMQX_TOKEN}'
+            }
     response = requests.get(
-        f'{BASE_URL}/clients/{topic.serial_number}', auth=(username, password))
+                f'{BASE_URL}/clients/{topic.serial_number}', headers=headers)
     response_dict = json.loads(response.text)
     try:
         if response_dict['connected']:
