@@ -19,8 +19,18 @@ def get_mosque_status(topic)->bool:
     import requests
     from constance import config
     BASE_URL = config.BASE_MQTT_API_URL
+    username = config.MQTT_USERNAME
+    password = config.MQTT_PASSWORD
+    login_hearders={
+    'Authorization': 'Basic ' + (username + ':' + password).encode('utf-8').hex()
+}           
+    login_request= json.loads(requests.post(url=f'{BASE_URL}/login/',headers=login_hearders,json={"username":username,"password":password}).text)
+    token=login_request.get('token')
+    headers = {
+    'Authorization': f'Bearer {token}'
+    }
     headers = { 
-            'Authorization': f'Bearer {config.EMQX_TOKEN}'
+            'Authorization': f'Bearer {token}'
             }
     response = requests.get(
                 f'{BASE_URL}/clients/{topic.serial_number}', headers=headers)
@@ -53,6 +63,7 @@ def on_message(client, userdata, msg):
                     if not Mosque.objects.filter(topic=topic).exists():
                         Mosque.objects.create(topic=topic,name=mosque_name)
                     mosque_status=get_mosque_status(topic=topic) # get raspberryPi status
+                    print(mosque_status)
                     Mosque.objects.filter(topic=topic).update(status=mosque_status) # modefy raspberryPi status
             elif json_msg ["operation"]=="transfer":
                 if json_msg["data"]["model"]=="Plug":
