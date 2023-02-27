@@ -196,8 +196,13 @@ class CurrentMosqueState(APIView):
         except Topic.DoesNotExist:
             topic = None
         if topic:
+            login_hearders={
+    'Authorization': 'Basic ' + (username + ':' + password).encode('utf-8').hex()
+}           
+            login_request= json.loads(requests.post(url=f'{BASE_URL}/login/',headers=login_hearders,json={"username":username,"password":password}).text)
+            token=login_request.get('token')
             headers = {
-            'Authorization': f'Bearer {config.EMQX_TOKEN}'
+            'Authorization': f'Bearer {token}'
             }
             response = requests.get(
                 f'{BASE_URL}/clients/{topic.serial_number}', headers=headers)
