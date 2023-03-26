@@ -129,7 +129,7 @@ class CurrentPrayerTime(APIView):
             id_day = (current_date_mounth-1)*30 + \
                 current_date_day  # get current day id
             try:
-                prayer_json = self_mosque.state.prayer_time_am_pm["data"][id_day]
+                prayer_json = self_mosque.state.prayer_time_am_pm["data"][id_day+1]
                 prayer_json_without_pm = self_mosque.state.prayer_time["data"][id_day]
                 current_time = datetime.now().time()
                 elfajer_time = datetime.strptime(
@@ -152,11 +152,6 @@ class CurrentPrayerTime(APIView):
                     prayer_json_without_pm[f"{remaining[1]}"], "%H:%M:%S")
                 prayer_detect_time_seconds = get_total_seconds(
                     prayer_detect_time)
-                status = "-"
-                if prayer_detect_time_seconds-time_now_seconds < 0:
-                    status = "+"
-                else:
-                    status = "-"
                 date_today = datetime.today()
                 milad_date = hijri_date = Gregorian(
                     date_today.year, date_today.month, date_today.day)
